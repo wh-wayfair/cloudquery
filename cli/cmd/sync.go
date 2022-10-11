@@ -87,6 +87,15 @@ func syncConnection(ctx context.Context, sourceSpec specs.Source, destinationsSp
 		}
 	}()
 
+	warnings, errors, err := sourceClient.Validate(ctx, sourceSpec)
+	if err != nil {
+		return fmt.Errorf("failed to validate %s: %w", sourceSpec.Name, err)
+	}
+	logWarningsAndErrors(sourceSpec.Name, warnings, errors)
+	if len(errors) > 0 {
+		return fmt.Errorf("validation for source plugin %s failed", sourceSpec.Name)
+	}
+
 	destClients := make([]*clients.DestinationClient, len(sourceSpec.Destinations))
 	destSubscriptions := make([]chan []byte, len(sourceSpec.Destinations))
 	for i := range destSubscriptions {
@@ -102,6 +111,11 @@ func syncConnection(ctx context.Context, sourceSpec specs.Source, destinationsSp
 			}
 		}
 	}()
+
+	tables, err := sourceClient.GetTables(ctx)
+	if err != nil {
+		return fmt.Errorf("failed to get tables for source %s: %w", sourceSpec.Name, err)
+	}
 	for i, destinationSpec := range destinationsSpecs {
 		destClients[i], err = clients.NewDestinationClient(ctx, destinationSpec.Registry, destinationSpec.Path, destinationSpec.Version,
 			clients.WithDestinationLogger(log.Logger),
@@ -112,11 +126,14 @@ func syncConnection(ctx context.Context, sourceSpec specs.Source, destinationsSp
 		if err := destClients[i].Initialize(ctx, destinationSpec); err != nil {
 			return fmt.Errorf("failed to initialize destination plugin client for %s: %w", destinationSpec.Name, err)
 		}
-		tables, err := sourceClient.GetTables(ctx)
+		destWarnings, destErrors, err := destClients[i].Validate(ctx, destinationSpec)
 		if err != nil {
-			return fmt.Errorf("failed to get tables for source %s: %w", sourceSpec.Name, err)
+			return fmt.Errorf("failed to validate %s: %w", destinationSpec.Name, err)
 		}
-
+		logWarningsAndErrors(destinationSpec.Name, destWarnings, destErrors)
+		if len(errors) > 0 {
+			return fmt.Errorf("validation for destination plugin %s failed", destinationSpec.Name)
+		}
 		if err := destClients[i].Migrate(ctx, tables); err != nil {
 			return fmt.Errorf("failed to migrate source %s on destination %s : %w", sourceSpec.Name, destinationSpec.Name, err)
 		}
@@ -190,4 +207,15 @@ func syncConnection(ctx context.Context, sourceSpec specs.Source, destinationsSp
 	log.Info().Str("source", sourceSpec.Name).Strs("destinations", sourceSpec.Destinations).
 		Int("resources", totalResources).Uint64("errors", summary.Errors).Uint64("panic", summary.Panics).Uint64("failedWrites", failedWrites).Msg("sync completed successfully")
 	return nil
+}
+
+func logWarningsAndErrors(name string, warnings, errors []string) {
+	for _, warn := range warnings {
+		log.Warn().Msg(warn)
+		fmt.Printf("Warning: (%s) %s\n", name, warn)
+	}
+	for _, errMsg := range errors {
+		log.Error().Msg(errMsg)
+		fmt.Printf("Error: (%s) %s\n", name, errMsg)
+	}
 }
