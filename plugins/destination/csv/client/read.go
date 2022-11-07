@@ -12,7 +12,7 @@ import (
 	"github.com/cloudquery/plugin-sdk/schema"
 )
 
-func (c *Client) read(table *schema.Table, sourceName string, res chan<- *schema.DestinationResource) error {
+func (c *Client) read(table *schema.Table, sourceName string, res chan<- []interface{}) error {
 	filePath := path.Join(c.csvSpec.Directory, table.Name+".csv")
 	f, err := os.Open(filePath)
 	if err != nil {
@@ -45,24 +45,17 @@ func (c *Client) read(table *schema.Table, sourceName string, res chan<- *schema
 			continue
 		}
 
-		cqTypes, err := schema.CQTypesFromValues(table, record)
-		if err != nil {
-			return err
-		}
-		res <- &schema.DestinationResource{
-			TableName: table.Name,
-			Data:      cqTypes,
-		}
+		res <- record
 	}
 	return nil
 }
 
-func (c *Client) Read(tx context.Context, table *schema.Table, sourceName string, res chan<- *schema.DestinationResource) error {
+func (c *Client) Read(tx context.Context, table *schema.Table, sourceName string, res chan<- []interface{}) error {
 	msg := &readMsg{
 		table:     table,
 		source:    sourceName,
 		err:       make(chan error),
-		resources: make(chan *schema.DestinationResource),
+		resources: make(chan []interface{}),
 	}
 	c.readChan <- msg
 	for {

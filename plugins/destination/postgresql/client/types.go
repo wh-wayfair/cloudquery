@@ -1,7 +1,7 @@
 package client
 
 import (
-	"github.com/cloudquery/plugin-sdk/schema"
+	"github.com/cloudquery/plugin-sdk/v2/schema"
 )
 
 func (c *Client) SchemaTypeToPg(t schema.ValueType) string {
@@ -31,8 +31,6 @@ func (*Client) SchemaTypeToPg10(t schema.ValueType) string {
 		return "text[]"
 	case schema.TypeTimestamp:
 		return "timestamp without time zone"
-	case schema.TypeTimeInterval:
-		return "interval(6)"
 	case schema.TypeJSON:
 		return "jsonb"
 	case schema.TypeUUIDArray:
@@ -74,8 +72,6 @@ func (*Client) SchemaTypeToCockroach(t schema.ValueType) string {
 		return "text[]"
 	case schema.TypeTimestamp:
 		return "timestamp without time zone"
-	case schema.TypeTimeInterval:
-		return "interval" // cockroach defaults to interval(6), so we leave it as is
 	case schema.TypeJSON:
 		return "jsonb"
 	case schema.TypeUUIDArray:

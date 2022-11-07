@@ -3,9 +3,11 @@ module github.com/cloudquery/cloudquery/plugins/destination/csv
 go 1.19
 
 require (
-	github.com/cloudquery/plugin-sdk v0.13.20
+	github.com/cloudquery/plugin-sdk/v1 v0.13.20
 	github.com/rs/zerolog v1.28.0
 )
+
+replace github.com/cloudquery/plugin-sdk/v1 => ../../../../plugin-sdk-split
 
 require (
 	github.com/getsentry/sentry-go v0.14.0 // indirect

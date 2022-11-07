@@ -1,7 +1,7 @@
 package client
 
 import (
-	"github.com/cloudquery/plugin-sdk/plugins"
+	"github.com/cloudquery/plugin-sdk/v2/plugins"
 )
 
 func (c *Client) Metrics() plugins.DestinationMetrics {

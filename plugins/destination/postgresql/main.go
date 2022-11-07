@@ -3,8 +3,8 @@ package main
 import (
 	"github.com/cloudquery/cloudquery/plugins/destination/postgresql/client"
 	"github.com/cloudquery/cloudquery/plugins/destination/postgresql/resources/plugin"
-	"github.com/cloudquery/plugin-sdk/plugins"
-	"github.com/cloudquery/plugin-sdk/serve"
+	"github.com/cloudquery/plugin-sdk/v2/plugins"
+	"github.com/cloudquery/plugin-sdk/v2/serve"
 )
 
 const (
