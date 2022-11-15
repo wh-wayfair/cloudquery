@@ -27,7 +27,7 @@ func SubnetGroups() *schema.Table {
 			{
 				Name:        "arn",
 				Type:        schema.TypeString,
-				Resolver:    resolveSubnetGroupArn(),
+				Resolver:    resolveSubnetGroupArn,
 				Description: `The Amazon Resource Name (ARN) for the resource.`,
 				CreationOptions: schema.ColumnCreationOptions{
 					PrimaryKey: true,

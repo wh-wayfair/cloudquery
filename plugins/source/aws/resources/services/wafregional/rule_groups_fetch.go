@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/aws/arn"
 	"github.com/aws/aws-sdk-go-v2/service/wafregional"
 	"github.com/aws/aws-sdk-go-v2/service/wafregional/types"
 	"github.com/cloudquery/cloudquery/plugins/source/aws/client"
@@ -46,14 +47,30 @@ func fetchWafregionalRuleGroups(ctx context.Context, meta schema.ClientMeta, par
 }
 
 func resolveWafregionalRuleGroupArn(ctx context.Context, meta schema.ClientMeta, resource *schema.Resource, c schema.Column) error {
-	return resource.Set(c.Name, ruleGroupARN(meta, *resource.Item.(types.RuleGroup).RuleGroupId))
+	cl := meta.(*client.Client)
+	item := resource.Item.(types.RuleGroup)
+	arn := arn.ARN{
+		Partition: cl.Partition,
+		Service:   string(client.WAFRegional),
+		Region:    cl.Region,
+		AccountID: cl.AccountID,
+		Resource:  "rulegroup/" + aws.ToString(item.RuleGroupId),
+	}
+	return resource.Set(c.Name, arn.String())
 }
 
 func resolveWafregionalRuleGroupTags(ctx context.Context, meta schema.ClientMeta, resource *schema.Resource, c schema.Column) error {
 	cl := meta.(*client.Client)
 	svc := cl.Services().Wafregional
-	arn := ruleGroupARN(meta, *resource.Item.(types.RuleGroup).RuleGroupId)
-	params := wafregional.ListTagsForResourceInput{ResourceARN: &arn}
+	item := resource.Item.(types.RuleGroup)
+	arn := arn.ARN{
+		Partition: cl.Partition,
+		Service:   string(client.WAFRegional),
+		Region:    cl.Region,
+		AccountID: cl.AccountID,
+		Resource:  "rulegroup/" + aws.ToString(item.RuleGroupId),
+	}
+	params := wafregional.ListTagsForResourceInput{ResourceARN: aws.String(arn.String())}
 	tags := make(map[string]string)
 	for {
 		result, err := svc.ListTagsForResource(ctx, &params)
@@ -69,9 +86,4 @@ func resolveWafregionalRuleGroupTags(ctx context.Context, meta schema.ClientMeta
 		params.NextMarker = result.NextMarker
 	}
 	return resource.Set(c.Name, tags)
-}
-
-func ruleGroupARN(meta schema.ClientMeta, id string) string {
-	cl := meta.(*client.Client)
-	return cl.ARN(client.WAFRegional, "rulegroup", id)
 }

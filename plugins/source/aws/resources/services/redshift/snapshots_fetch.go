@@ -2,9 +2,9 @@ package redshift
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/aws/arn"
 	"github.com/aws/aws-sdk-go-v2/service/redshift"
 	"github.com/aws/aws-sdk-go-v2/service/redshift/types"
 	"github.com/cloudquery/cloudquery/plugins/source/aws/client"
@@ -37,9 +37,13 @@ func fetchRedshiftSnapshots(ctx context.Context, meta schema.ClientMeta, parent 
 func resolveSnapshotARN(ctx context.Context, meta schema.ClientMeta, resource *schema.Resource, c schema.Column) error {
 	cl := meta.(*client.Client)
 	snapshot := resource.Item.(types.Snapshot)
-	return resource.Set(c.Name, snapshotARN(cl, *snapshot.ClusterIdentifier, *snapshot.SnapshotIdentifier))
+	arn := arn.ARN{
+		Partition: cl.Partition,
+		Service:   string(client.RedshiftService),
+		Region:    cl.Region,
+		AccountID: cl.AccountID,
+		Resource: "snapshot:" + aws.ToString(snapshot.ClusterIdentifier) + "/" + aws.ToString(snapshot.SnapshotIdentifier),
+	}
+	return resource.Set(c.Name, arn.String())
 }
 
-func snapshotARN(cl *client.Client, clusterName, snapshotName string) string {
-	return cl.ARN(client.RedshiftService, fmt.Sprintf("snapshot:%s", clusterName), snapshotName)
-}

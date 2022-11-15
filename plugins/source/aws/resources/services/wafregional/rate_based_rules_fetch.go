@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/aws/arn"
 	"github.com/aws/aws-sdk-go-v2/service/wafregional"
 	"github.com/aws/aws-sdk-go-v2/service/wafregional/types"
 	"github.com/cloudquery/cloudquery/plugins/source/aws/client"
@@ -45,13 +46,29 @@ func fetchWafregionalRateBasedRules(ctx context.Context, meta schema.ClientMeta,
 	return nil
 }
 func resolveWafregionalRateBasedRuleArn(ctx context.Context, meta schema.ClientMeta, resource *schema.Resource, c schema.Column) error {
-	return resource.Set(c.Name, rateBasedRuleARN(meta, *resource.Item.(types.RateBasedRule).RuleId))
+	cl := meta.(*client.Client)
+	item := resource.Item.(types.RateBasedRule)
+	arn := arn.ARN{
+		Partition: cl.Partition,
+		Service:   string(client.WAFRegional),
+		Region:    cl.Region,
+		AccountID: cl.AccountID,
+		Resource:  "ratebasedrule/" + aws.ToString(item.RuleId),
+	}
+	return resource.Set(c.Name, arn.String())
 }
 func resolveWafregionalRateBasedRuleTags(ctx context.Context, meta schema.ClientMeta, resource *schema.Resource, c schema.Column) error {
 	cl := meta.(*client.Client)
 	svc := cl.Services().Wafregional
-	arn := rateBasedRuleARN(meta, *resource.Item.(types.RateBasedRule).RuleId)
-	params := wafregional.ListTagsForResourceInput{ResourceARN: &arn}
+	item := resource.Item.(types.RateBasedRule)
+	arn := arn.ARN{
+		Partition: cl.Partition,
+		Service:   string(client.WAFRegional),
+		Region:    cl.Region,
+		AccountID: cl.AccountID,
+		Resource:  "ratebasedrule/" + aws.ToString(item.RuleId),
+	}
+	params := wafregional.ListTagsForResourceInput{ResourceARN: aws.String(arn.String())}
 	tags := make(map[string]string)
 	for {
 		result, err := svc.ListTagsForResource(ctx, &params)
@@ -67,9 +84,4 @@ func resolveWafregionalRateBasedRuleTags(ctx context.Context, meta schema.Client
 		params.NextMarker = result.NextMarker
 	}
 	return resource.Set(c.Name, tags)
-}
-
-func rateBasedRuleARN(meta schema.ClientMeta, id string) string {
-	cl := meta.(*client.Client)
-	return cl.ARN(client.WAFRegional, "ratebasedrule", id)
 }

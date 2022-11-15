@@ -2,9 +2,9 @@ package redshift
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/aws/arn"
 	"github.com/aws/aws-sdk-go-v2/service/redshift"
 	"github.com/aws/aws-sdk-go-v2/service/redshift/types"
 	"github.com/cloudquery/cloudquery/plugins/source/aws/client"
@@ -33,9 +33,12 @@ func fetchRedshiftEventSubscriptions(ctx context.Context, meta schema.ClientMeta
 func resolveEventSubscriptionARN(ctx context.Context, meta schema.ClientMeta, resource *schema.Resource, c schema.Column) error {
 	cl := meta.(*client.Client)
 	sub := resource.Item.(types.EventSubscription)
-	return resource.Set(c.Name, eventSubscriptionARN(cl, *sub.CustSubscriptionId))
-}
-
-func eventSubscriptionARN(cl *client.Client, name string) string {
-	return cl.ARN(client.RedshiftService, fmt.Sprintf("eventsubscription:%s", name))
+	arn := arn.ARN{
+		Partition: cl.Partition,
+		Service:   string(client.RedshiftService),
+		Region:    cl.Region,
+		AccountID: cl.AccountID,
+		Resource: "eventsubscription:" + aws.ToString(sub.CustSubscriptionId),
+	}
+	return resource.Set(c.Name, arn.String())
 }

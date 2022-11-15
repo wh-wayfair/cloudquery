@@ -3,6 +3,8 @@ package ses
 import (
 	"context"
 
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/aws/arn"
 	"github.com/aws/aws-sdk-go-v2/service/sesv2"
 	"github.com/aws/aws-sdk-go-v2/service/sesv2/types"
 	"github.com/cloudquery/cloudquery/plugins/source/aws/client"
@@ -46,7 +48,14 @@ func getEmailIdentity(ctx context.Context, meta schema.ClientMeta, resource *sch
 }
 
 func resolveEmailIdentityArn(ctx context.Context, meta schema.ClientMeta, resource *schema.Resource, c schema.Column) error {
-	return client.ResolveARN(client.SESService, func(resource *schema.Resource) ([]string, error) {
-		return []string{"identity", *resource.Item.(*models.EmailIdentityWrapper).IdentityName}, nil
-	})(ctx, meta, resource, c)
+	cl := meta.(*client.Client)
+	item := resource.Item.(models.EmailIdentityWrapper)
+	arn := arn.ARN{
+		Partition: cl.Partition,
+		Service:   "ses",
+		Region:    cl.Region,
+		AccountID: cl.AccountID,
+		Resource:  "identity/" + aws.ToString(item.IdentityName),
+	}
+	return resource.Set(c.Name, arn.String())
 }

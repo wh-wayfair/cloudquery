@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/aws/arn"
 	"github.com/aws/aws-sdk-go-v2/service/elasticbeanstalk"
 	"github.com/aws/aws-sdk-go-v2/service/elasticbeanstalk/types"
 	"github.com/cloudquery/cloudquery/plugins/source/aws/client"
@@ -83,8 +84,15 @@ func fetchElasticbeanstalkConfigurationOptions(ctx context.Context, meta schema.
 	}
 
 	for _, option := range output.Options {
+		arn := arn.ARN{
+			Partition: c.Partition,
+			Service:   "elasticbeanstalk",
+			Region:    c.Region,
+			AccountID: c.AccountID,
+			Resource:  "application/" + *p.ApplicationName,
+		}
 		res <- models.ConfigurationOptionDescriptionWrapper{
-			ConfigurationOptionDescription: option, ApplicationArn: c.ARN("elasticbeanstalk", "application", *p.ApplicationName),
+			ConfigurationOptionDescription: option, ApplicationArn: arn.String(),
 		}
 	}
 
@@ -111,8 +119,15 @@ func fetchElasticbeanstalkConfigurationSettings(ctx context.Context, meta schema
 	}
 
 	for _, option := range output.ConfigurationSettings {
+		arn := arn.ARN{
+			Partition: c.Partition,
+			Service:   "elasticbeanstalk",
+			AccountID: c.AccountID,
+			Region:    c.Region,
+			Resource:  "application/" + *p.ApplicationName,
+		}
 		res <- models.ConfigurationSettingsDescriptionWrapper{
-			ConfigurationSettingsDescription: option, ApplicationArn: c.ARN("elasticbeanstalk", "application", *p.ApplicationName),
+			ConfigurationSettingsDescription: option, ApplicationArn: arn.String(),
 		}
 	}
 

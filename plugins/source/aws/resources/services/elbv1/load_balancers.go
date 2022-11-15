@@ -27,7 +27,7 @@ func LoadBalancers() *schema.Table {
 			{
 				Name:     "arn",
 				Type:     schema.TypeString,
-				Resolver: resolveLoadBalancerARN(),
+				Resolver: resolveLoadBalancerARN,
 				CreationOptions: schema.ColumnCreationOptions{
 					PrimaryKey: true,
 				},

@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/aws/arn"
 	"github.com/aws/aws-sdk-go-v2/service/glue"
 	"github.com/aws/aws-sdk-go-v2/service/glue/types"
 	"github.com/cloudquery/cloudquery/plugins/source/aws/client"
@@ -45,15 +46,28 @@ func getWorkflow(ctx context.Context, meta schema.ClientMeta, resource *schema.R
 
 func resolveGlueWorkflowArn(ctx context.Context, meta schema.ClientMeta, resource *schema.Resource, c schema.Column) error {
 	cl := meta.(*client.Client)
-	arn := aws.String(workflowARN(cl, aws.ToString(resource.Item.(*types.Workflow).Name)))
+	arn := arn.ARN{
+		Partition: cl.Partition,
+		Service:   string(client.GlueService),
+		Region:    cl.Region,
+		AccountID: cl.AccountID,
+		Resource:  "workflow:" + aws.ToString(resource.Item.(*types.Workflow).Name),
+	}
 	return resource.Set(c.Name, arn)
 }
 
 func resolveGlueWorkflowTags(ctx context.Context, meta schema.ClientMeta, resource *schema.Resource, c schema.Column) error {
 	cl := meta.(*client.Client)
 	svc := cl.Services().Glue
+	arn := arn.ARN{
+		Partition: cl.Partition,
+		Service:   string(client.GlueService),
+		Region:    cl.Region,
+		AccountID: cl.AccountID,
+		Resource:  "workflow:" + aws.ToString(resource.Item.(*types.Workflow).Name),
+	}
 	result, err := svc.GetTags(ctx, &glue.GetTagsInput{
-		ResourceArn: aws.String(workflowARN(cl, aws.ToString(resource.Item.(*types.Workflow).Name))),
+		ResourceArn: aws.String(arn.String()),
 	})
 	if err != nil {
 		if cl.IsNotFoundError(err) {
@@ -64,10 +78,3 @@ func resolveGlueWorkflowTags(ctx context.Context, meta schema.ClientMeta, resour
 	return resource.Set(c.Name, result.Tags)
 }
 
-// ====================================================================================================================
-//                                                  User Defined Helpers
-// ====================================================================================================================
-
-func workflowARN(cl *client.Client, name string) string {
-	return cl.ARN(client.GlueService, "workflow", name)
-}

@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/aws/arn"
 	elbv1 "github.com/aws/aws-sdk-go-v2/service/elasticloadbalancing"
 	"github.com/aws/aws-sdk-go-v2/service/elasticloadbalancing/types"
 	"github.com/cloudquery/cloudquery/plugins/source/aws/client"
@@ -101,8 +102,16 @@ func getTagsByLoadBalancerName(id string, tagsResponse []types.TagDescription) [
 	return nil
 }
 
-func resolveLoadBalancerARN() schema.ColumnResolver {
-	return client.ResolveARN(client.ElasticLoadBalancingService, func(resource *schema.Resource) ([]string, error) {
-		return []string{"loadbalancer", *resource.Item.(models.ELBv1LoadBalancerWrapper).LoadBalancerName}, nil
-	})
+func resolveLoadBalancerARN(_ context.Context, meta schema.ClientMeta, resource *schema.Resource, c schema.Column) error {
+	cl := meta.(*client.Client)
+	item := resource.Item.(models.ELBv1LoadBalancerWrapper)
+	a := arn.ARN{
+		Partition: cl.Partition,
+		Service:   string(client.CloudfrontService),
+		Region:    cl.Region,
+		AccountID: cl.AccountID,
+		Resource:  "loadbalancer/" + aws.ToString(item.LoadBalancerName),
+	}
+	return resource.Set(c.Name, a.String())
 }
+

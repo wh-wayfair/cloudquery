@@ -2,9 +2,9 @@ package redshift
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/aws/arn"
 	"github.com/aws/aws-sdk-go-v2/service/redshift"
 	"github.com/aws/aws-sdk-go-v2/service/redshift/types"
 	"github.com/cloudquery/cloudquery/plugins/source/aws/client"
@@ -29,8 +29,16 @@ func fetchRedshiftSubnetGroups(ctx context.Context, meta schema.ClientMeta, pare
 	return nil
 }
 
-func resolveSubnetGroupArn() schema.ColumnResolver {
-	return client.ResolveARN(client.RedshiftService, func(resource *schema.Resource) ([]string, error) {
-		return []string{fmt.Sprintf("subnetgroup:%s", *resource.Item.(types.ClusterSubnetGroup).ClusterSubnetGroupName)}, nil
-	})
+
+func resolveSubnetGroupArn(_ context.Context, meta schema.ClientMeta, resource *schema.Resource, c schema.Column) error {
+	cl := meta.(*client.Client)
+	item := resource.Item.(types.ClusterSubnetGroup)
+	a := arn.ARN{
+		Partition: cl.Partition,
+		Service:   string(client.RedshiftService),
+		Region:    cl.Region,
+		AccountID: cl.AccountID,
+		Resource:  "subnetgroup/" + aws.ToString(item.ClusterSubnetGroupName),
+	}
+	return resource.Set(c.Name, a.String())
 }

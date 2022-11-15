@@ -2,8 +2,10 @@ package apigateway
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/aws/arn"
 	"github.com/aws/aws-sdk-go-v2/service/apigateway"
 	"github.com/aws/aws-sdk-go-v2/service/apigateway/types"
 	"github.com/cloudquery/cloudquery/plugins/source/aws/client"
@@ -26,7 +28,13 @@ func fetchApigatewayRestApis(ctx context.Context, meta schema.ClientMeta, parent
 func resolveApigatewayRestAPIArn(ctx context.Context, meta schema.ClientMeta, resource *schema.Resource, c schema.Column) error {
 	cl := meta.(*client.Client)
 	rapi := resource.Item.(types.RestApi)
-	arn := cl.RegionGlobalARN(client.ApigatewayService, restApiIDPart, *rapi.Id)
+	arn := arn.ARN{
+		Partition: cl.Partition,
+		Service:   string(client.ApigatewayService),
+		Region:    cl.Region,
+		AccountID: cl.AccountID,
+		Resource:  fmt.Sprintf("restapis/%s", *rapi.Id),
+	}
 	return resource.Set(c.Name, arn)
 }
 func fetchApigatewayRestApiAuthorizers(ctx context.Context, meta schema.ClientMeta, parent *schema.Resource, res chan<- interface{}) error {
@@ -54,7 +62,13 @@ func resolveApigatewayRestAPIAuthorizerArn(ctx context.Context, meta schema.Clie
 	cl := meta.(*client.Client)
 	auth := resource.Item.(types.Authorizer)
 	rapi := resource.Parent.Item.(types.RestApi)
-	arn := cl.RegionGlobalARN(client.ApigatewayService, restApiIDPart, *rapi.Id, "authorizers", *auth.Id)
+	arn := arn.ARN{
+		Partition: cl.Partition,
+		Service:   string(client.ApigatewayService),
+		Region:    cl.Region,
+		AccountID: cl.AccountID,
+		Resource:  fmt.Sprintf("%s/authorizers/%s", *rapi.Id, *auth.Id),
+	}
 	return resource.Set(c.Name, arn)
 }
 func fetchApigatewayRestApiDeployments(ctx context.Context, meta schema.ClientMeta, parent *schema.Resource, res chan<- interface{}) error {
@@ -78,8 +92,14 @@ func resolveApigatewayRestAPIDeploymentArn(ctx context.Context, meta schema.Clie
 	cl := meta.(*client.Client)
 	d := resource.Item.(types.Deployment)
 	rapi := resource.Parent.Item.(types.RestApi)
-	arn := cl.RegionGlobalARN(client.ApigatewayService, restApiIDPart, *rapi.Id, "deployments", *d.Id)
-	return resource.Set(c.Name, arn)
+	arn := arn.ARN{
+		Partition: cl.Partition,
+		Service:   string(client.ApigatewayService),
+		Region:    cl.Region,
+		AccountID: cl.AccountID,
+		Resource:  fmt.Sprintf("%s/deployments/%s", *rapi.Id, *d.Id),
+	}
+	return resource.Set(c.Name, arn.String())
 }
 func fetchApigatewayRestApiDocumentationParts(ctx context.Context, meta schema.ClientMeta, parent *schema.Resource, res chan<- interface{}) error {
 	r := parent.Item.(types.RestApi)
@@ -106,8 +126,14 @@ func resolveApigatewayRestAPIDocumentationPartArn(ctx context.Context, meta sche
 	cl := meta.(*client.Client)
 	d := resource.Item.(types.DocumentationPart)
 	rapi := resource.Parent.Item.(types.RestApi)
-	arn := cl.RegionGlobalARN(client.ApigatewayService, restApiIDPart, *rapi.Id, "documentation/parts", *d.Id)
-	return resource.Set(c.Name, arn)
+	arn := arn.ARN{
+		Partition: cl.Partition,
+		Service:   string(client.ApigatewayService),
+		Region:    cl.Region,
+		AccountID: cl.AccountID,
+		Resource:  fmt.Sprintf("%s/documentation/parts/%s", *rapi.Id, *d.Id),
+	}
+	return resource.Set(c.Name, arn.String())
 }
 func fetchApigatewayRestApiDocumentationVersions(ctx context.Context, meta schema.ClientMeta, parent *schema.Resource, res chan<- interface{}) error {
 	r := parent.Item.(types.RestApi)
@@ -134,7 +160,13 @@ func resolveApigatewayRestAPIDocumentationVersionArn(ctx context.Context, meta s
 	cl := meta.(*client.Client)
 	v := resource.Item.(types.DocumentationVersion)
 	rapi := resource.Parent.Item.(types.RestApi)
-	arn := cl.RegionGlobalARN(client.ApigatewayService, restApiIDPart, *rapi.Id, "documentation/versions", *v.Version)
+	arn := arn.ARN{
+		Partition: cl.Partition,
+		Service:   string(client.ApigatewayService),
+		Region:    cl.Region,
+		AccountID: cl.AccountID,
+		Resource:  fmt.Sprintf("%s/documentation/versions/%s", *rapi.Id, *v.Version),
+	}
 	return resource.Set(c.Name, arn)
 }
 func fetchApigatewayRestApiGatewayResponses(ctx context.Context, meta schema.ClientMeta, parent *schema.Resource, res chan<- interface{}) error {
@@ -162,9 +194,16 @@ func resolveApigatewayRestAPIGatewayResponseArn(ctx context.Context, meta schema
 	cl := meta.(*client.Client)
 	r := resource.Item.(types.GatewayResponse)
 	rapi := resource.Parent.Item.(types.RestApi)
-	arn := cl.RegionGlobalARN(client.ApigatewayService, restApiIDPart, *rapi.Id, "gatewayresponses", string(r.ResponseType))
-	return resource.Set(c.Name, arn)
+	arn := arn.ARN{
+		Partition: cl.Partition,
+		Service:   string(client.ApigatewayService),
+		Region:    cl.Region,
+		AccountID: cl.AccountID,
+		Resource:  fmt.Sprintf("%s/%s/gatewayresponses/%s", restApiIDPart, *rapi.Id, r.ResponseType),
+	}
+	return resource.Set(c.Name, arn.String())
 }
+
 func fetchApigatewayRestApiModels(ctx context.Context, meta schema.ClientMeta, parent *schema.Resource, res chan<- interface{}) error {
 	r := parent.Item.(types.RestApi)
 	c := meta.(*client.Client)
@@ -186,8 +225,14 @@ func resolveApigatewayRestAPIModelArn(ctx context.Context, meta schema.ClientMet
 	cl := meta.(*client.Client)
 	m := resource.Item.(types.Model)
 	rapi := resource.Parent.Item.(types.RestApi)
-	arn := cl.RegionGlobalARN(client.ApigatewayService, restApiIDPart, *rapi.Id, "models", *m.Name)
-	return resource.Set(c.Name, arn)
+	arn := arn.ARN{
+		Partition: cl.Partition,
+		Service:   string(client.ApigatewayService),
+		Region:    cl.Region,
+		AccountID: cl.AccountID,
+		Resource:  fmt.Sprintf("%s/models/%s", *rapi.Id, *m.Name),
+	}
+	return resource.Set(c.Name, arn.String())
 }
 func resolveApigatewayRestAPIModelModelTemplate(ctx context.Context, meta schema.ClientMeta, resource *schema.Resource, c schema.Column) error {
 	r := resource.Item.(types.Model)
@@ -245,7 +290,13 @@ func resolveApigatewayRestAPIRequestValidatorArn(ctx context.Context, meta schem
 	cl := meta.(*client.Client)
 	r := resource.Item.(types.RequestValidator)
 	rapi := resource.Parent.Item.(types.RestApi)
-	arn := cl.RegionGlobalARN(client.ApigatewayService, restApiIDPart, *rapi.Id, "requestvalidators", *r.Id)
+	arn := arn.ARN{
+		Partition: cl.Partition,
+		Service:   string(client.ApigatewayService),
+		Region:    cl.Region,
+		AccountID: cl.AccountID,
+		Resource:  fmt.Sprintf("%s/%s/requestvalidators/%s", restApiIDPart, *rapi.Id, r.Id),
+	}
 	return resource.Set(c.Name, arn)
 }
 func fetchApigatewayRestApiResources(ctx context.Context, meta schema.ClientMeta, parent *schema.Resource, res chan<- interface{}) error {
@@ -269,8 +320,14 @@ func resolveApigatewayRestAPIResourceArn(ctx context.Context, meta schema.Client
 	cl := meta.(*client.Client)
 	r := resource.Item.(types.Resource)
 	rapi := resource.Parent.Item.(types.RestApi)
-	arn := cl.RegionGlobalARN(client.ApigatewayService, restApiIDPart, *rapi.Id, "resources", *r.Id)
-	return resource.Set(c.Name, arn)
+	arn := arn.ARN{
+		Partition: cl.Partition,
+		Service:   string(client.ApigatewayService),
+		Region:    cl.Region,
+		AccountID: cl.AccountID,
+		Resource:  fmt.Sprintf("%s/%s/resources/%s", restApiIDPart, *rapi.Id, r.Id),
+	}
+	return resource.Set(c.Name, arn.String())
 }
 func fetchApigatewayRestApiStages(ctx context.Context, meta schema.ClientMeta, parent *schema.Resource, res chan<- interface{}) error {
 	r := parent.Item.(types.RestApi)

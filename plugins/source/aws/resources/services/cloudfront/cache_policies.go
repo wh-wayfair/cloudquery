@@ -27,7 +27,7 @@ func CachePolicies() *schema.Table {
 			{
 				Name:     "arn",
 				Type:     schema.TypeString,
-				Resolver: resolveCachePolicyARN(),
+				Resolver: resolveCachePolicyARN,
 			},
 			{
 				Name:     "cache_policy",

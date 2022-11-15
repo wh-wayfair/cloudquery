@@ -6,8 +6,10 @@ import (
 	"fmt"
 	"sync"
 
+	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/aws/aws-sdk-go-v2/service/s3/types"
+	"github.com/aws/aws-sdk-go/aws/arn"
 	"github.com/cloudquery/cloudquery/plugins/source/aws/client"
 	"github.com/cloudquery/cloudquery/plugins/source/aws/resources/services/s3/models"
 	"github.com/cloudquery/plugin-sdk/schema"
@@ -405,6 +407,19 @@ func isBucketNotFoundError(cl *client.Client, err error) bool {
 		return true
 	}
 	return false
+}
+
+func resolveBucketARN(_ context.Context, meta schema.ClientMeta, resource *schema.Resource, c schema.Column) error {
+	cl := meta.(*client.Client)
+	item := resource.Item.(*models.WrappedBucket)
+	a := arn.ARN{
+		Partition: cl.Partition,
+		Service:   "ec2",
+		Region:    cl.Region,
+		AccountID: cl.AccountID,
+		Resource:  "security-group/" + aws.ToString(item.GroupId),
+	}
+	return resource.Set(c.Name, a.String())
 }
 
 func resolveBucketARN() schema.ColumnResolver {

@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/aws/arn"
 	"github.com/aws/aws-sdk-go-v2/service/route53"
 	"github.com/aws/aws-sdk-go-v2/service/route53/types"
 	"github.com/cloudquery/cloudquery/plugins/source/aws/client"
@@ -139,18 +140,41 @@ func getRoute53tagsByResourceID(id string, set []types.ResourceTagSet) []types.T
 	}
 	return nil
 }
+
 func resolveRoute53HostedZoneArn(_ context.Context, meta schema.ClientMeta, resource *schema.Resource, c schema.Column) error {
 	cl := meta.(*client.Client)
 	hz := resource.Item.(*models.Route53HostedZoneWrapper)
-	return resource.Set(c.Name, cl.PartitionGlobalARN(client.Route53Service, "hostedzone", *hz.Id))
+	arn := arn.ARN{
+		Partition: cl.Partition,
+		Service:   "route53",
+		Region:    cl.Region,
+		AccountID: cl.AccountID,
+		Resource: "hostedzone/" + *hz.Id,
+	}
+	return resource.Set(c.Name, arn.String())
 }
+
 func resolveRoute53HostedZoneQueryLoggingConfigsArn(_ context.Context, meta schema.ClientMeta, resource *schema.Resource, c schema.Column) error {
 	cl := meta.(*client.Client)
 	ql := resource.Item.(types.QueryLoggingConfig)
-	return resource.Set(c.Name, cl.PartitionGlobalARN(client.Route53Service, "queryloggingconfig", *ql.Id))
+	arn := arn.ARN{
+		Partition: cl.Partition,
+		Service:   "route53",
+		Region:    cl.Region,
+		AccountID: cl.AccountID,
+		Resource: "queryloggingconfig/" + *ql.Id,
+	}
+	return resource.Set(c.Name, arn.String())
 }
 func resolveRoute53HostedZoneTrafficPolicyInstancesArn(_ context.Context, meta schema.ClientMeta, resource *schema.Resource, c schema.Column) error {
 	cl := meta.(*client.Client)
 	tp := resource.Item.(types.TrafficPolicyInstance)
-	return resource.Set(c.Name, cl.PartitionGlobalARN(client.Route53Service, "trafficpolicyinstance", *tp.Id))
+	arn := arn.ARN{
+		Partition: cl.Partition,
+		Service:   string(client.Route53Service),
+		Region:    cl.Region,
+		AccountID: cl.AccountID,
+		Resource: "trafficpolicyinstance/" + *tp.Id,
+	}
+	return resource.Set(c.Name, arn.String())
 }

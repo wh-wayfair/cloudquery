@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/aws/arn"
 	"github.com/aws/aws-sdk-go-v2/service/sesv2"
 	"github.com/aws/aws-sdk-go-v2/service/sesv2/types"
 	"github.com/cloudquery/cloudquery/plugins/source/aws/client"
@@ -54,7 +55,14 @@ func getTemplate(ctx context.Context, meta schema.ClientMeta, resource *schema.R
 }
 
 func resolveSesTemplateArn(ctx context.Context, meta schema.ClientMeta, resource *schema.Resource, c schema.Column) error {
-	return client.ResolveARN(client.SESService, func(resource *schema.Resource) ([]string, error) {
-		return []string{"template", *resource.Item.(*models.Template).TemplateName}, nil
-	})(ctx, meta, resource, c)
+	cl := meta.(*client.Client)
+	item := resource.Item.(models.Template)
+	arn := arn.ARN{
+		Partition: cl.Partition,
+		Service:   "ses",
+		Region:    cl.Region,
+		AccountID: cl.AccountID,
+		Resource:  "template/" + aws.ToString(item.TemplateName),
+	}
+	return resource.Set(c.Name, arn.String())
 }
