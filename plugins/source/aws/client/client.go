@@ -47,11 +47,11 @@ type AssumeRoleAPIClient interface {
 	AssumeRole(ctx context.Context, params *sts.AssumeRoleInput, optFns ...func(*sts.Options)) (*sts.AssumeRoleOutput, error)
 }
 
-type ServicesPartitionAccountRegionMap map[string]map[string]map[string]*Services
+type ServicesPartitionAccountMap map[string]map[string]*Services
 
 // ServicesManager will hold the entire map of (account X region) services
 type ServicesManager struct {
-	services         ServicesPartitionAccountRegionMap
+	services         ServicesPartitionAccountMap
 	wafScopeServices map[string]map[string]*Services
 }
 
@@ -68,28 +68,21 @@ var errUnknownRegion = func(region string) error {
 	return fmt.Errorf("unknown region: %q", region)
 }
 
-func (s *ServicesManager) ServicesByPartitionAccountAndRegion(partition, accountId, region string) *Services {
-	if region == "" {
-		region = defaultRegion
-	}
-	return s.services[partition][accountId][region]
+func (s *ServicesManager) ServicesByPartitionAccount(partition, accountId string) *Services {
+	return s.services[partition][accountId]
 }
 
 func (s *ServicesManager) ServicesByAccountForWAFScope(partition, accountId string) *Services {
 	return s.wafScopeServices[partition][accountId]
 }
 
-func (s *ServicesManager) InitServicesForPartitionAccountAndRegion(partition, accountId, region string, svcs Services) {
+func (s *ServicesManager) InitServicesForPartitionAccount(partition, accountId string, svcs Services) {
 	if s.services == nil {
-		s.services = make(map[string]map[string]map[string]*Services)
+		s.services = make(map[string]map[string]*Services)
 	}
 	if s.services[partition] == nil {
-		s.services[partition] = make(map[string]map[string]*Services)
+		s.services[partition] = make(map[string]*Services)
 	}
-	if s.services[partition][accountId] == nil {
-		s.services[partition][accountId] = make(map[string]*Services)
-	}
-	s.services[partition][accountId][region] = &svcs
 }
 
 func (s *ServicesManager) InitServicesForPartitionAccountAndScope(partition, accountId string, svcs Services) {
@@ -105,13 +98,13 @@ func (s *ServicesManager) InitServicesForPartitionAccountAndScope(partition, acc
 func NewAwsClient(logger zerolog.Logger) Client {
 	return Client{
 		ServicesManager: ServicesManager{
-			services: ServicesPartitionAccountRegionMap{},
+			services: ServicesPartitionAccountMap{},
 		},
 		logger: logger,
 	}
 }
 
-func (s ServicesPartitionAccountRegionMap) Accounts() []string {
+func (s ServicesPartitionAccountMap) Accounts() []string {
 	accounts := make([]string, 0)
 	for partitions := range s {
 		for account := range s[partitions] {
@@ -134,7 +127,7 @@ func (c *Client) ID() string {
 }
 
 func (c *Client) Services() *Services {
-	s := c.ServicesManager.ServicesByPartitionAccountAndRegion(c.Partition, c.AccountID, c.Region)
+	s := c.ServicesManager.ServicesByPartitionAccount(c.Partition, c.AccountID)
 	if s == nil && c.WAFScope == wafv2types.ScopeCloudfront {
 		return c.ServicesManager.ServicesByAccountForWAFScope(c.Partition, c.AccountID)
 	}
@@ -423,7 +416,7 @@ func Configure(ctx context.Context, logger zerolog.Logger, spec specs.Source) (s
 		}
 
 		for _, region := range account.Regions {
-			client.ServicesManager.InitServicesForPartitionAccountAndRegion(iamArn.Partition, *output.Account, region, initServices(region, awsCfg))
+			client.ServicesManager.InitServicesForPartitionAccount(iamArn.Partition, *output.Account, region, initServices(region, awsCfg))
 		}
 		client.ServicesManager.InitServicesForPartitionAccountAndScope(iamArn.Partition, *output.Account, initServices(cloudfrontScopeRegion, awsCfg))
 	}

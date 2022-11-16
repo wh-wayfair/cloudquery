@@ -32,7 +32,7 @@ func AwsMockTestHelper(t *testing.T, table *schema.Table, builder func(*testing.
 			return nil, fmt.Errorf("failed to unmarshal aws spec: %w", err)
 		}
 		c := NewAwsClient(l)
-		c.ServicesManager.InitServicesForPartitionAccountAndRegion("aws", "testAccount", "us-east-1", builder(t, ctrl))
+		c.ServicesManager.InitServicesForPartitionAccount("aws", "testAccount", builder(t, ctrl))
 		c.Partition = "aws"
 		return &c, nil
 	}
