@@ -1,0 +1,21 @@
+version: 2
+
+models:
+  - name: avoid_root_usage
+    description: "Avoid the use of 'root' account. Show used in last 30 days (Scored)"
+    columns:
+      - name: title
+      - name: account_id
+      - name: resource_id
+  - name: mfa_enabled_for_console_access
+    description: "Ensure MFA is enabled for all IAM users that have a console password (Scored)"
+    columns:
+      - name: title
+      - name: account_id
+      - name: resource_id
+  - name: unused_creds_disabled
+    description: "Ensure credentials unused for 90 days or greater are disabled (Scored)"
+    columns:
+      - name: title
+      - name: account_id
+      - name: resource_id

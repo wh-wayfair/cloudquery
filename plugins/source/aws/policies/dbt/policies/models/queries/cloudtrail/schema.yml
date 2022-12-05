@@ -1,0 +1,9 @@
+version: 2
+
+models:
+  - name: enabled_in_all_regions
+    description: "Ensure CloudTrail is enabled in all regions"
+    columns:
+      - name: title
+      - name: account_id
+      - name: resource_id

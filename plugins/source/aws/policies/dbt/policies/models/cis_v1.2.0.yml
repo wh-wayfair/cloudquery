@@ -1,0 +1,20 @@
+version: 2
+
+sources:
+  - name: cloudquery
+    schema: public
+    database: cloudquery
+    tables:
+      - name: aws_cloudtrail_trail_event_selectors
+      - name: aws_cloudtrail_trails
+      - name: aws_ec2_flow_logs
+      - name: aws_ec2_security_groups
+      - name: aws_ec2_vpcs
+      - name: aws_iam_credential_reports
+      - name: aws_iam_password_policies
+      - name: aws_iam_user_access_keys
+      - name: aws_iam_user_attached_policies
+      - name: aws_iam_users
+      - name: aws_iam_virtual_mfa_devices
+      - name: aws_kms_keys
+      - name: aws_s3_buckets
