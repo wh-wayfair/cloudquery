@@ -5,14 +5,14 @@ go 1.19
 require (
 	cloud.google.com/go/apikeys v0.2.0
 	cloud.google.com/go/billing v1.7.0
-	cloud.google.com/go/compute v1.12.1
+	cloud.google.com/go/compute v1.13.0
 	cloud.google.com/go/container v1.8.0
 	cloud.google.com/go/containeranalysis v0.6.0
 	cloud.google.com/go/domains v0.7.0
 	cloud.google.com/go/functions v1.9.0
 	cloud.google.com/go/iam v0.7.0
 	cloud.google.com/go/kms v1.6.0
-	cloud.google.com/go/logging v1.5.0
+	cloud.google.com/go/logging v1.6.1
 	cloud.google.com/go/monitoring v1.9.0
 	cloud.google.com/go/redis v1.10.0
 	cloud.google.com/go/resourcemanager v1.4.0
@@ -34,13 +34,22 @@ require (
 	github.com/thoas/go-funk v0.9.3-0.20221027085339-5573bc209e28
 	golang.org/x/sync v0.1.0
 	google.golang.org/api v0.103.0
-	google.golang.org/genproto v0.0.0-20221130183247-a2ec334bae6f
+	google.golang.org/genproto v0.0.0-20221202195650-67e5cbc046fd
 	google.golang.org/grpc v1.51.0
 	google.golang.org/protobuf v1.28.1
 )
 
 require (
 	cloud.google.com/go v0.106.0 // indirect
+	cloud.google.com/go/accessapproval v1.5.0 // indirect
+	cloud.google.com/go/accesscontextmanager v1.5.0 // indirect
+	cloud.google.com/go/aiplatform v1.28.0 // indirect
+	cloud.google.com/go/analytics v0.12.0 // indirect
+	cloud.google.com/go/apigateway v1.4.0 // indirect
+	cloud.google.com/go/apigeeconnect v1.4.0 // indirect
+	cloud.google.com/go/apigeeregistry v0.2.1 // indirect
+	cloud.google.com/go/appengine v1.5.0 // indirect
+	cloud.google.com/go/artifactregistry v1.9.0 // indirect
 	cloud.google.com/go/compute/metadata v0.2.1 // indirect
 	cloud.google.com/go/longrunning v0.3.0 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
