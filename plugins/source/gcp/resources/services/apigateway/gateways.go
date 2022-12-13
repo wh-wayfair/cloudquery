@@ -76,7 +76,7 @@ func fetchGateways(ctx context.Context, meta schema.ClientMeta, parent *schema.R
 	if err != nil {
 		return err
 	}
-	it := gcpClient.ListGateways(ctx, req)
+	it := gcpClient.ListGateways(ctx, req, c.CallOptions...)
 	for {
 		resp, err := it.Next()
 		if err == iterator.Done {

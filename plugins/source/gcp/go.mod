@@ -50,9 +50,26 @@ require (
 	cloud.google.com/go/apigeeregistry v0.2.1 // indirect
 	cloud.google.com/go/appengine v1.5.0 // indirect
 	cloud.google.com/go/artifactregistry v1.9.0 // indirect
+	cloud.google.com/go/asset v1.10.1 // indirect
+	cloud.google.com/go/assuredworkloads v1.9.0 // indirect
+	cloud.google.com/go/automl v1.8.0 // indirect
+	cloud.google.com/go/batch v0.5.0 // indirect
+	cloud.google.com/go/beyondcorp v0.3.1 // indirect
+	cloud.google.com/go/bigtable v1.18.1 // indirect
+	cloud.google.com/go/binaryauthorization v1.4.0 // indirect
+	cloud.google.com/go/certificatemanager v1.4.0 // indirect
+	cloud.google.com/go/cloudbuild v1.5.0 // indirect
+	cloud.google.com/go/clouddms v1.4.0 // indirect
+	cloud.google.com/go/cloudtasks v1.8.0 // indirect
 	cloud.google.com/go/compute/metadata v0.2.1 // indirect
 	cloud.google.com/go/longrunning v0.3.0 // indirect
+	github.com/census-instrumentation/opencensus-proto v0.2.1 // indirect
+	github.com/cespare/xxhash/v2 v2.1.1 // indirect
+	github.com/cncf/udpa/go v0.0.0-20210930031921-04548b0d99d4 // indirect
+	github.com/cncf/xds/go v0.0.0-20211011173535-cb28da3451f1 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
+	github.com/envoyproxy/go-control-plane v0.10.2-0.20220325020618-49ff273808a1 // indirect
+	github.com/envoyproxy/protoc-gen-validate v0.1.0 // indirect
 	github.com/getsentry/sentry-go v0.15.0 // indirect
 	github.com/ghodss/yaml v1.0.0 // indirect
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect

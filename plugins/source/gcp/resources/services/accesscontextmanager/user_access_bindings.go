@@ -51,7 +51,7 @@ func fetchUserAccessBindings(ctx context.Context, meta schema.ClientMeta, parent
 	if err != nil {
 		return err
 	}
-	it := gcpClient.ListGcpUserAccessBindings(ctx, req)
+	it := gcpClient.ListGcpUserAccessBindings(ctx, req, c.CallOptions...)
 	for {
 		resp, err := it.Next()
 		if err == iterator.Done {

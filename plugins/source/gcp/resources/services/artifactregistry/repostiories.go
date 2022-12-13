@@ -71,7 +71,7 @@ func fetchRepostiories(ctx context.Context, meta schema.ClientMeta, parent *sche
 	if err != nil {
 		return err
 	}
-	it := gcpClient.ListRepositories(ctx, req)
+	it := gcpClient.ListRepositories(ctx, req, c.CallOptions...)
 	for {
 		resp, err := it.Next()
 		if err == iterator.Done {

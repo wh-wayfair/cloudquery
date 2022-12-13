@@ -91,7 +91,7 @@ func fetchRequests(ctx context.Context, meta schema.ClientMeta, parent *schema.R
 	if err != nil {
 		return err
 	}
-	it := gcpClient.ListDatasets(ctx, req)
+	it := gcpClient.ListDatasets(ctx, req, c.CallOptions...)
 	for {
 		resp, err := it.Next()
 		if err == iterator.Done {
