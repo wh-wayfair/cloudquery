@@ -48,7 +48,7 @@ func (*Client) TransformInt8Array(v *schema.Int8Array) interface{} {
 }
 
 func (*Client) TransformJSON(v *schema.JSON) interface{} {
-	return &pgtype.JSON{
+	return &pgtype.JSONB{
 		Bytes:  v.Bytes,
 		Status: cqStatusToPgStatus[v.Status],
 	}

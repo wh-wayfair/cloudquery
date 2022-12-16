@@ -3,7 +3,9 @@ package client
 import (
 	"context"
 	"fmt"
+	"math/rand"
 	"strings"
+	"time"
 
 	"github.com/cloudquery/plugin-sdk/plugins"
 	"github.com/cloudquery/plugin-sdk/specs"
@@ -61,10 +63,13 @@ const (
 	pgTypeCockroachDB
 )
 
+
+
 func New(ctx context.Context, logger zerolog.Logger, spec specs.Destination) (plugins.DestinationClient, error) {
 	c := &Client{
 		logger: logger.With().Str("module", "pg-dest").Logger(),
 	}
+	rand.Seed(time.Now().UnixNano())
 	var specPostgreSql Spec
 	c.spec = spec
 	if err := spec.UnmarshalSpec(&specPostgreSql); err != nil {
@@ -91,6 +96,8 @@ func New(ctx context.Context, logger zerolog.Logger, spec specs.Destination) (pl
 	pgxConfig.ConnConfig.LogLevel = logLevel
 	// maybe expose this to the user?
 	pgxConfig.ConnConfig.RuntimeParams["timezone"] = "UTC"
+	pgxConfig.MinConns = 4
+	pgxConfig.MaxConns = 100
 	c.conn, err = pgxpool.ConnectConfig(ctx, pgxConfig)
 	if err != nil {
 		return nil, fmt.Errorf("failed to connect to postgresql: %w", err)

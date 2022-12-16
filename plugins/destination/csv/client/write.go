@@ -91,6 +91,11 @@ func (c *Client) writeResource(resource *plugins.ClientResource) {
 	}
 }
 
+func (c *Client) WriteTableBatch(ctx context.Context, table *schema.Table, resources [][]interface{}) error {
+	return nil
+}
+
+
 func (c *Client) Write(ctx context.Context, tables schema.Tables, res <-chan *plugins.ClientResource) error {
 	startWriteMsg := &startWriteMsg{
 		tables: tables,

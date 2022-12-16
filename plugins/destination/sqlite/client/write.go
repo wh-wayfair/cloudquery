@@ -4,28 +4,31 @@ import (
 	"context"
 	"fmt"
 	"strings"
+	"time"
 
-	"github.com/cloudquery/plugin-sdk/plugins"
 	"github.com/cloudquery/plugin-sdk/schema"
 	"github.com/cloudquery/plugin-sdk/specs"
 )
 
-func (c *Client) Write(ctx context.Context, tables schema.Tables, res <-chan *plugins.ClientResource) error {
+func (c *Client) PreWrite(ctx context.Context, tables schema.Tables, sourceName string, syncTime time.Time) error {
+	return nil
+}
+
+func (c *Client) WriteTableBatch(ctx context.Context, table *schema.Table, resources [][]interface{}) error {
 	var sql string
-	for r := range res {
-		table := tables.Get(r.TableName)
-		if c.spec.WriteMode == specs.WriteModeAppend {
-			sql = c.insert(table)
-		} else {
-			sql = c.upsert(table)
-		}
-		if _, err := c.db.Exec(sql, r.Data...); err != nil {
+	if c.spec.WriteMode == specs.WriteModeAppend {
+		sql = c.insert(table)
+	} else {
+		sql = c.upsert(table)
+	}
+	for _, r := range resources {
+		if _, err := c.db.Exec(sql, r...); err != nil {
 			return fmt.Errorf("failed to execute '%s': %w", sql, err)
 		}
 	}
-
 	return nil
 }
+
 
 func (*Client) insert(table *schema.Table) string {
 	var sb strings.Builder
