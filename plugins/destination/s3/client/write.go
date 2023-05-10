@@ -37,7 +37,7 @@ var reInvalidJSONKey = regexp.MustCompile(`\W`)
 
 var _ destination.OpenCloseWriter = (*Client)(nil)
 
-func (c *Client) OpenTable(_ context.Context, sourceSpec specs.Source, table *schema.Table) error {
+func (c *Client) OpenTable(ctx context.Context, sourceSpec specs.Source, table *schema.Table) error {
 	c.logger.Debug().Str("source", sourceSpec.Name).Str("table", table.Name).Msg("OpenTable")
 
 	c.tableWorkersMu.Lock()
@@ -49,7 +49,7 @@ func (c *Client) OpenTable(_ context.Context, sourceSpec specs.Source, table *sc
 	doneCh := make(chan error)
 
 	go func() {
-		_, err := c.uploader.Upload(context.Background(), &s3.PutObjectInput{
+		_, err := c.uploader.Upload(ctx, &s3.PutObjectInput{
 			Bucket: aws.String(c.pluginSpec.Bucket),
 			Key:    aws.String(objKey),
 			Body:   pr,
@@ -59,8 +59,16 @@ func (c *Client) OpenTable(_ context.Context, sourceSpec specs.Source, table *sc
 		close(doneCh)
 	}()
 
+	h, err := c.Client.WriteHeader(pw, table)
+	if err != nil {
+		_ = pw.CloseWithError(err)
+		<-doneCh
+		return err
+	}
+
 	mk := mapKey(sourceSpec, table)
 	c.tableWorkers[mk] = &worker{
+		h:    h,
 		pw:   pw,
 		done: doneCh,
 	}
@@ -75,8 +83,10 @@ func (c *Client) CloseTable(ctx context.Context, sourceSpec specs.Source, table 
 	wkr := c.tableWorkers[mk]
 	c.tableWorkersMu.Unlock()
 
-	_ = wkr.pw.Close()
-	err := <-wkr.done
+	err := wkr.h.WriteFooter()
+	_ = wkr.pw.CloseWithError(err)
+
+	err = <-wkr.done
 
 	c.tableWorkersMu.Lock()
 	delete(c.tableWorkers, mk)

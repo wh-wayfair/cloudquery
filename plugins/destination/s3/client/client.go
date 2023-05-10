@@ -12,7 +12,8 @@ import (
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/feature/s3/manager"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
-	"github.com/cloudquery/filetypes/v3"
+	"github.com/cloudquery/filetypes"
+	"github.com/cloudquery/filetypes/v3/types"
 	"github.com/cloudquery/plugin-pb-go/specs"
 	"github.com/cloudquery/plugin-sdk/v3/plugins/destination"
 	"github.com/rs/zerolog"
@@ -34,6 +35,7 @@ type Client struct {
 }
 
 type worker struct {
+	h    types.Handle
 	pw   *io.PipeWriter
 	done chan error
 }
