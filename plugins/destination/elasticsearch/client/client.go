@@ -23,6 +23,8 @@ type Client struct {
 	typedClient *elasticsearch.TypedClient
 }
 
+var _ destination.Client = (*Client)(nil)
+
 func New(ctx context.Context, logger zerolog.Logger, destSpec specs.Destination) (destination.Client, error) {
 	var err error
 	c := &Client{

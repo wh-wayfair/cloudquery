@@ -8,12 +8,13 @@ import (
 	"strings"
 	"time"
 
+	"github.com/apache/arrow/go/v13/arrow"
 	"github.com/cloudquery/plugin-pb-go/specs"
 	"github.com/cloudquery/plugin-sdk/v3/schema"
 	"github.com/segmentio/fasthash/fnv1a"
 )
 
-func (c *Client) WriteTableBatch(ctx context.Context, table *schema.Table, resources [][]any) error {
+func (c *Client) WriteTableBatch(ctx context.Context, table *schema.Table, resources []arrow.Record) error {
 	if len(resources) == 0 {
 		return nil
 	}

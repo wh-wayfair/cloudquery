@@ -17,7 +17,7 @@ func (c *Client) Migrate(ctx context.Context, tables schema.Tables) error {
 		if err != nil {
 			return fmt.Errorf("failed to generate index template: %w", err)
 		}
-		resp, err := c.client.Indices.PutIndexTemplate(table.Name, strings.NewReader(tmpl))
+		resp, err := c.client.Indices.PutIndexTemplate(table.Name, strings.NewReader(tmpl), c.client.Indices.PutIndexTemplate.WithContext(ctx))
 		if err != nil {
 			return fmt.Errorf("failed to create index template: %w", err)
 		}
@@ -72,18 +72,8 @@ func (c *Client) getIndexTemplate(table *schema.Table) (string, error) {
 		}
 	}
 	tmp := types.IndexTemplate{
-		AllowAutoCreate: nil,
-		ComposedOf:      []string{},
-		DataStream:      nil,
-		IndexPatterns:   []string{c.getIndexNamePattern(table.Name)},
-		Meta_:           nil,
-		Priority:        nil,
-		Template: &types.IndexTemplateSummary{
-			Mappings: &types.TypeMapping{
-				Properties: properties,
-			},
-		},
-		Version: nil,
+		IndexPatterns: []string{c.getIndexNamePattern(table.Name)},
+		Template:      &types.IndexTemplateSummary{Mappings: &types.TypeMapping{Properties: properties}},
 	}
 	b, err := json.Marshal(tmp)
 	return string(b), err
