@@ -43,7 +43,7 @@ func (c *Client) OpenTable(ctx context.Context, sourceSpec specs.Source, table *
 	c.tableWorkersMu.Lock()
 	defer c.tableWorkersMu.Unlock()
 
-	objKey := replacePathVariables(c.pluginSpec.Path, table.Name, uuid.NewString(), time.Now().UTC())
+	objKey := replacePathVariables(c.pluginSpec.Path, table.Name, uuid.NewString(), c.pluginSpec.Format, time.Now().UTC())
 
 	pr, pw := io.Pipe()
 	doneCh := make(chan error)
@@ -59,7 +59,7 @@ func (c *Client) OpenTable(ctx context.Context, sourceSpec specs.Source, table *
 		close(doneCh)
 	}()
 
-	h, err := c.Client.WriteHeader(pw, table)
+	h, err := c.Client.WriteHeader(pw, table.ToArrowSchema())
 	if err != nil {
 		_ = pw.CloseWithError(err)
 		<-doneCh
@@ -75,8 +75,8 @@ func (c *Client) OpenTable(ctx context.Context, sourceSpec specs.Source, table *
 	return nil
 }
 
-func (c *Client) CloseTable(ctx context.Context, sourceSpec specs.Source, table *arrow.Schema) error {
-	c.logger.Debug().Str("source", sourceSpec.Name).Str("table", schema.TableName(table)).Msg("CloseTable")
+func (c *Client) CloseTable(ctx context.Context, sourceSpec specs.Source, table *schema.Table) error {
+	c.logger.Debug().Str("source", sourceSpec.Name).Str("table", table.Name).Msg("CloseTable")
 
 	c.tableWorkersMu.Lock()
 	mk := mapKey(sourceSpec, table)
