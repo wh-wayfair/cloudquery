@@ -24,7 +24,7 @@ replace github.com/cloudquery/plugin-sdk/v3 => github.com/disq/plugin-sdk/v3 v3.
 
 //replace github.com/cloudquery/plugin-sdk/v3 => ../../../../plugin-sdk
 
-replace github.com/cloudquery/filetypes/v3 => ../../../../filetypes
+replace github.com/cloudquery/filetypes/v3 => github.com/cloudquery/filetypes/v3 v3.0.1-0.20230512085542-08aa6cbace18
 
 require (
 	github.com/JohnCGriffin/overflow v0.0.0-20211019200055-46fa312c352c // indirect
