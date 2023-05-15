@@ -5,6 +5,19 @@ All notable changes to this provider will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.6.0](https://github.com/cloudquery/cloudquery/compare/plugins-source-terraform-v1.5.2...plugins-source-terraform-v1.6.0) (2023-05-15)
+
+
+### Features
+
+* **deps:** Upgrade to Apache Arrow v13 (latest `cqmain`) ([#10605](https://github.com/cloudquery/cloudquery/issues/10605)) ([a55da3d](https://github.com/cloudquery/cloudquery/commit/a55da3dbefafdc68a6bda2d5f1d334d12dd97b97))
+
+
+### Bug Fixes
+
+* **deps:** Update module github.com/aws/aws-sdk-go-v2/config to v1.18.25 ([#10786](https://github.com/cloudquery/cloudquery/issues/10786)) ([caca1a4](https://github.com/cloudquery/cloudquery/commit/caca1a41e298c06afb6f474b8fd911c4544a2eec))
+* **deps:** Update module github.com/aws/aws-sdk-go-v2/feature/s3/manager to v1.11.67 ([#10788](https://github.com/cloudquery/cloudquery/issues/10788)) ([fd660b2](https://github.com/cloudquery/cloudquery/commit/fd660b25463256ffc4350c2b795bf5138e03fbdb))
+
 ## [1.5.2](https://github.com/cloudquery/cloudquery/compare/plugins-source-terraform-v1.5.1...plugins-source-terraform-v1.5.2) (2023-05-09)
 
 
