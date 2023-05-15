@@ -8,6 +8,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [9.0.0](https://github.com/cloudquery/cloudquery/compare/plugins-source-gcp-v8.5.1...plugins-source-gcp-v9.0.0) (2023-05-15)
 
 
+### This Release has the Following Changes to Tables
+- Table `gcp_aiplatform_index_endpoints`: column added with name `public_endpoint_domain_name` and type `String`
+- Table `gcp_aiplatform_index_endpoints`: column added with name `public_endpoint_enabled` and type `Bool`
+- Table `gcp_aiplatform_index_endpoints`: column order changed for `private_service_connect_config`
+- Table `gcp_container_clusters`: column added with name `fleet` and type `JSON`
+- Table `gcp_container_clusters`: column order changed for `etag`
+
 ### ⚠ BREAKING CHANGES
 
 * **gcp:** Make Listing Enabled Services failures not block the sync ([#10699](https://github.com/cloudquery/cloudquery/issues/10699))
