@@ -5,6 +5,13 @@ All notable changes to this provider will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.4.0](https://github.com/cloudquery/cloudquery/compare/plugins-source-cloudflare-v3.3.1...plugins-source-cloudflare-v3.4.0) (2023-05-15)
+
+
+### Features
+
+* **deps:** Upgrade to Apache Arrow v13 (latest `cqmain`) ([#10605](https://github.com/cloudquery/cloudquery/issues/10605)) ([a55da3d](https://github.com/cloudquery/cloudquery/commit/a55da3dbefafdc68a6bda2d5f1d334d12dd97b97))
+
 ## [3.3.1](https://github.com/cloudquery/cloudquery/compare/plugins-source-cloudflare-v3.3.0...plugins-source-cloudflare-v3.3.1) (2023-05-02)
 
 
