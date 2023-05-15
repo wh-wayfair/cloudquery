@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.3.0](https://github.com/cloudquery/cloudquery/compare/plugins-destination-bigquery-v2.2.6...plugins-destination-bigquery-v2.3.0) (2023-05-15)
+
+
+### Features
+
+* **deps:** Upgrade to Apache Arrow v13 (latest `cqmain`) ([#10605](https://github.com/cloudquery/cloudquery/issues/10605)) ([a55da3d](https://github.com/cloudquery/cloudquery/commit/a55da3dbefafdc68a6bda2d5f1d334d12dd97b97))
+
 ## [2.2.6](https://github.com/cloudquery/cloudquery/compare/plugins-destination-bigquery-v2.2.5...plugins-destination-bigquery-v2.2.6) (2023-04-25)
 
 
