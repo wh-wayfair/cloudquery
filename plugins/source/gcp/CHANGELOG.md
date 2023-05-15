@@ -5,6 +5,19 @@ All notable changes to this provider will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.0.0](https://github.com/cloudquery/cloudquery/compare/plugins-source-gcp-v8.5.1...plugins-source-gcp-v9.0.0) (2023-05-15)
+
+
+### ⚠ BREAKING CHANGES
+
+* **gcp:** Make Listing Enabled Services failures not block the sync ([#10699](https://github.com/cloudquery/cloudquery/issues/10699))
+
+### Features
+
+* **deps:** Upgrade to Apache Arrow v13 (latest `cqmain`) ([#10605](https://github.com/cloudquery/cloudquery/issues/10605)) ([a55da3d](https://github.com/cloudquery/cloudquery/commit/a55da3dbefafdc68a6bda2d5f1d334d12dd97b97))
+* **gcp:** Enable Better Logging for when `enabled_services_only` fails ([#10695](https://github.com/cloudquery/cloudquery/issues/10695)) ([a849aea](https://github.com/cloudquery/cloudquery/commit/a849aea5783cbfb6dc69e07f395e4137ab13ffb3))
+* **gcp:** Make Listing Enabled Services failures not block the sync ([#10699](https://github.com/cloudquery/cloudquery/issues/10699)) ([5b49481](https://github.com/cloudquery/cloudquery/commit/5b49481f53f8e0720e9db48c908964aca2821a81))
+
 ## [8.5.1](https://github.com/cloudquery/cloudquery/compare/plugins-source-gcp-v8.5.0...plugins-source-gcp-v8.5.1) (2023-05-02)
 
 
