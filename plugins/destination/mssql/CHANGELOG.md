@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.1.0](https://github.com/cloudquery/cloudquery/compare/plugins-destination-mssql-v4.0.0...plugins-destination-mssql-v4.1.0) (2023-05-15)
+
+
+### Features
+
+* **deps:** Upgrade to Apache Arrow v13 (latest `cqmain`) ([#10605](https://github.com/cloudquery/cloudquery/issues/10605)) ([a55da3d](https://github.com/cloudquery/cloudquery/commit/a55da3dbefafdc68a6bda2d5f1d334d12dd97b97))
+
 ## [4.0.0](https://github.com/cloudquery/cloudquery/compare/plugins-destination-mssql-v3.0.5...plugins-destination-mssql-v4.0.0) (2023-05-03)
 
 
