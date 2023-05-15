@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.0](https://github.com/cloudquery/cloudquery/compare/plugins-source-fastly-v1.3.1...plugins-source-fastly-v1.4.0) (2023-05-15)
+
+
+### Features
+
+* **deps:** Upgrade to Apache Arrow v13 (latest `cqmain`) ([#10605](https://github.com/cloudquery/cloudquery/issues/10605)) ([a55da3d](https://github.com/cloudquery/cloudquery/commit/a55da3dbefafdc68a6bda2d5f1d334d12dd97b97))
+
 ## [1.3.1](https://github.com/cloudquery/cloudquery/compare/plugins-source-fastly-v1.3.0...plugins-source-fastly-v1.3.1) (2023-05-02)
 
 
