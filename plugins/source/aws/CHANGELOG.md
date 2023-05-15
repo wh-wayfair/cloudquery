@@ -6,6 +6,28 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [17.3.0](https://github.com/cloudquery/cloudquery/compare/plugins-source-aws-v17.2.0...plugins-source-aws-v17.3.0) (2023-05-15)
+
+
+### Features
+
+* Add AWS Config Compliance Details table ([#10544](https://github.com/cloudquery/cloudquery/issues/10544)) ([9b43a2a](https://github.com/cloudquery/cloudquery/commit/9b43a2af489389a4cdd340e7880e899c149566aa))
+* **aws:** Add Support for Cloudformation Templates ([#10701](https://github.com/cloudquery/cloudquery/issues/10701)) ([7a23c2e](https://github.com/cloudquery/cloudquery/commit/7a23c2e59ebfb37349cbc0be8d17ae76e071d12f))
+* **deps:** Upgrade to Apache Arrow v13 (latest `cqmain`) ([#10605](https://github.com/cloudquery/cloudquery/issues/10605)) ([a55da3d](https://github.com/cloudquery/cloudquery/commit/a55da3dbefafdc68a6bda2d5f1d334d12dd97b97))
+
+
+### Bug Fixes
+
+* **aws-policies:** Api Gateway stage logging for REST ([#10625](https://github.com/cloudquery/cloudquery/issues/10625)) ([f0d6f57](https://github.com/cloudquery/cloudquery/commit/f0d6f57b4b8876984edc327cefa68cf7f063c941))
+* **aws-policies:** Api Gateway stage logging for websockets ([#10702](https://github.com/cloudquery/cloudquery/issues/10702)) ([e667400](https://github.com/cloudquery/cloudquery/commit/e6674006fe326859226cf6e01f754485bb40b4ad))
+* **aws:** Change column type of `aws_cloudformation_stack_templates.template_body` ([#10752](https://github.com/cloudquery/cloudquery/issues/10752)) ([75b9785](https://github.com/cloudquery/cloudquery/commit/75b97858739d7a6e28f43d4dc9ecc2610b9ca062))
+* **aws:** Fix the case where resrouce_id is null in ECS.2 of foundational policy ([#10692](https://github.com/cloudquery/cloudquery/issues/10692)) ([f5cf2d8](https://github.com/cloudquery/cloudquery/commit/f5cf2d866ab565e11be20f6c4e9f2bf0b8766eb8))
+* **aws:** Handle Cloudfront Regions in different partitions ([#10690](https://github.com/cloudquery/cloudquery/issues/10690)) ([158aab1](https://github.com/cloudquery/cloudquery/commit/158aab10de740ef18564e7288893477be96dbbbe))
+* **deps:** Update module github.com/aws/aws-sdk-go-v2/config to v1.18.25 ([#10786](https://github.com/cloudquery/cloudquery/issues/10786)) ([caca1a4](https://github.com/cloudquery/cloudquery/commit/caca1a41e298c06afb6f474b8fd911c4544a2eec))
+* **deps:** Update module github.com/aws/aws-sdk-go-v2/service/acm to v1.17.11 ([#10789](https://github.com/cloudquery/cloudquery/issues/10789)) ([9122f84](https://github.com/cloudquery/cloudquery/commit/9122f843867d7099e3e872e1236b7595d5f02b04))
+* **deps:** Update module github.com/aws/aws-sdk-go-v2/service/amp to v1.16.11 ([#10790](https://github.com/cloudquery/cloudquery/issues/10790)) ([431905f](https://github.com/cloudquery/cloudquery/commit/431905f2b4eb34a664e68d34ae7689293f1586e4))
+* **deps:** Update module github.com/aws/aws-sdk-go-v2/service/amplify to v1.13.10 ([#10791](https://github.com/cloudquery/cloudquery/issues/10791)) ([81d175b](https://github.com/cloudquery/cloudquery/commit/81d175b96e5eb46a9009d85abaf3e28b9eac8c60))
+
 ## [17.2.0](https://github.com/cloudquery/cloudquery/compare/plugins-source-aws-v17.1.0...plugins-source-aws-v17.2.0) (2023-05-09)
 
 
