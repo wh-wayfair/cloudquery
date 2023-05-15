@@ -1,5 +1,13 @@
 # Changelog
 
+## [5.2.0](https://github.com/cloudquery/cloudquery/compare/plugins-source-github-v5.1.1...plugins-source-github-v5.2.0) (2023-05-15)
+
+
+### Features
+
+* Add GitHub Enterprise support on GitHub source ([#10776](https://github.com/cloudquery/cloudquery/issues/10776)) ([3bc226b](https://github.com/cloudquery/cloudquery/commit/3bc226bb7d704ee76f71566e9a043b95b164ce05))
+* **deps:** Upgrade to Apache Arrow v13 (latest `cqmain`) ([#10605](https://github.com/cloudquery/cloudquery/issues/10605)) ([a55da3d](https://github.com/cloudquery/cloudquery/commit/a55da3dbefafdc68a6bda2d5f1d334d12dd97b97))
+
 ## [5.1.1](https://github.com/cloudquery/cloudquery/compare/plugins-source-github-v5.1.0...plugins-source-github-v5.1.1) (2023-05-02)
 
 
